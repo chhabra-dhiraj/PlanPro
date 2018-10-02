@@ -9,8 +9,8 @@
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="40dp"
+        android:textSize="@dimen/heading_text_large"
         android:textColor="@color/colorPrimaryDark"
-        android:text="PLanPro"/>
+        android:text="@string/app_name"/>
 
 </FrameLayout>
