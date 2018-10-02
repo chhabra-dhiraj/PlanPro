@@ -4,16 +4,14 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.dhirajchhabraeng.planpro.MainActivity;
 import com.example.dhirajchhabraeng.planpro.R;
 import com.example.dhirajchhabraeng.planpro.StorageManagement.PrefManager;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;

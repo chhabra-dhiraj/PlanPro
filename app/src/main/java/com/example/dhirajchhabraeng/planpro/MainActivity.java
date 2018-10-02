@@ -1,4 +1,4 @@
-package com.example.dhirajchhabraeng.planpro.Activities;
+package com.example.dhirajchhabraeng.planpro;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
