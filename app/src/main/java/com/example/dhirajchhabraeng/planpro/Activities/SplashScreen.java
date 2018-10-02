@@ -1,4 +1,6 @@
 package com.example.dhirajchhabraeng.planpro.Activities;
 
-public class SplashScreen {
+import android.support.v7.app.AppCompatActivity;
+
+public class SplashScreen extends AppCompatActivity {
 }
