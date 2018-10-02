@@ -20,6 +20,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Activities.WelcomeActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+
     </application>
 
 </manifest>
