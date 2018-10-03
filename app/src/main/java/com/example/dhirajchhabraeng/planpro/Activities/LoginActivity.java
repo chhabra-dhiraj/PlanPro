@@ -21,12 +21,15 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     private PrefManager prefManager;
     private FirebaseAuth firebaseAuth;
     private Button btnLogin;
+    private int backCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        prefManager = new PrefManager(LoginActivity.this);
+
 
         if (firebaseAuth.getCurrentUser() != null) {
             launchHomeScreen();
@@ -49,18 +52,22 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
 
     @Override
     protected void onResume() {
-
-        if (firebaseAuth.getCurrentUser() != null) {
-            launchHomeScreen();
-            finish();
-        }
+        backCount = 0;
         super.onResume();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == 0 && firebaseAuth.getCurrentUser() == null) {
-            Toast.makeText(this, "You need to log in to continue", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "You need to log in to continue", Toast.LENGTH_SHORT).show();
+        } else if(requestCode == 0 && firebaseAuth.getCurrentUser() != null){
+            Toast.makeText(this, "Login Successful :)", Toast.LENGTH_SHORT).show();
+            if(prefManager.isFirstTimeLaunch()) {
+                prefManager.setFirstTimeLaunch(false);
+            }
+            launchHomeScreen();
+            finish();
         }
     }
 
@@ -86,8 +93,18 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
 
     private void launchHomeScreen() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backCount == 0){
+            Toast.makeText(this, "Press Again to Exit", Toast.LENGTH_SHORT).show();
+            backCount++;
+        }else{
+            super.onBackPressed();
+        }
     }
 
 }

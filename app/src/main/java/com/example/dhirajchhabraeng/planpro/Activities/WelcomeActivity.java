@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.dhirajchhabraeng.planpro.R;
+import com.example.dhirajchhabraeng.planpro.StorageManagement.PrefManager;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -20,6 +21,7 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+
 
         btnGetStarted = findViewById(R.id.btnActWelcomeGetStarted);
         btnGetStarted.setOnClickListener(new View.OnClickListener() {
@@ -35,14 +37,12 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         backCount = 0;
-//        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-//            finish();
-//        }
     }
 
     private void launchLoginActivity() {
         Intent i = new Intent(WelcomeActivity.this, LoginActivity.class);
         startActivity(i);
+        finish();
     }
 
     //overriding method to prevent an unintentional back press

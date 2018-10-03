@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+`
         <activity android:name=".Activities.WelcomeActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
