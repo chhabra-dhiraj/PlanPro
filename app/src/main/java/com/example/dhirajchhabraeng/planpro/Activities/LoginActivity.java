@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
             finish();
         }
 
-        setContentView(R.layout.activity_login_intent_base);
+        setContentView(R.layout.activity_login);
 
         btnLogin = findViewById(R.id.login_button);
 

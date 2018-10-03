@@ -23,14 +23,19 @@
           }
         },
         {
+          "client_id": "290826354950-2eppa78gq0lvo6hnmf06tp7t8bv1dq0c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dhirajchhabraeng.planpro",
+            "certificate_hash": "70d887d794abd7d773cd90d8b6e29c15749509ee"
+          }
+        },
+        {
           "client_id": "290826354950-bce9pgfnsjpuo0p6ve0na89mb4d44mq4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
-        {
-          "current_key": "AIzaSyD2QXXniTatSW3s8s1nfSLoq-NRl1PZ3DY"
-        },
         {
           "current_key": "AIzaSyD2QXXniTatSW3s8s1nfSLoq-NRl1PZ3DY"
         }
