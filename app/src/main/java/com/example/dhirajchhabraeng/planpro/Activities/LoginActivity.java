@@ -54,14 +54,13 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
             launchHomeScreen();
             finish();
         }
-
         super.onResume();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0 && firebaseAuth.getCurrentUser() == null) {
-            Toast.makeText(this, "The application needs to be logged in to continue", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "You need to log in to continue", Toast.LENGTH_LONG).show();
         }
     }
 
