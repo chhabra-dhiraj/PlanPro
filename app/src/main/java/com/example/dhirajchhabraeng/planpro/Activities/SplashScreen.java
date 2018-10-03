@@ -42,6 +42,7 @@ public class SplashScreen extends AppCompatActivity {
                 Intent i;
                 prefManager = new PrefManager(SplashScreen.this);
                 if(prefManager.isFirstTimeLaunch()){
+                    prefManager.setFirstTimeLaunch(false);
                     i = new Intent(SplashScreen.this, WelcomeActivity.class);
                 }else if (firebaseAuth.getCurrentUser()==null){
                     i = new Intent(SplashScreen.this, LoginActivity.class);
