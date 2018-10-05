@@ -5,16 +5,25 @@
         android:id="@+id/home"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="Home" />
+
     <item
-        android:id="@+id/clients"
+        android:id="@+id/my_clients"
         android:icon="@drawable/ic_people_black_24dp"
-        android:title="Clients" />
+        android:title="My Clients" />
+
+    <item
+        android:id="@+id/my_tasks"
+        android:icon="@drawable/ic_work_black_24dp"
+        android:title="My Tasks" />
+
     <item
         android:id="@+id/about_us"
         android:icon="@drawable/ic_contact_mail_black_24dp"
         android:title="About Us" />
+
     <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_exit_to_app_black_24dp"
         android:title="Logout" />
+
 </menu>
