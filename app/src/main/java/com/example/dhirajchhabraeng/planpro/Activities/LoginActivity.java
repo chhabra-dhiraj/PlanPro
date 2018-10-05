@@ -103,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
             backCount++;
         }else{
             super.onBackPressed();
-            finish();
         }
     }
 
