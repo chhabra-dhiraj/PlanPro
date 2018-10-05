@@ -61,21 +61,13 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
 
         if (requestCode == 0 && firebaseAuth.getCurrentUser() == null) {
             Toast.makeText(this, "You need to log in to continue", Toast.LENGTH_SHORT).show();
-        } else if(requestCode == 0 && firebaseAuth.getCurrentUser() != null){
-            Toast.makeText(this, "Login Successful :)", Toast.LENGTH_SHORT).show();
-            if(prefManager.isFirstTimeLaunch()) {
-                prefManager.setFirstTimeLaunch(false);
-            }
-            launchHomeScreen();
-            finish();
         }
+
     }
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         if (firebaseAuth.getCurrentUser() == null) {
-            firebaseAuth.removeAuthStateListener(this);
-
             Intent loginIntent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setIsSmartLockEnabled(false)
@@ -85,9 +77,16 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
                             new AuthUI.IdpConfig.PhoneBuilder().build()))
                     .build();
 
+
             startActivityForResult(loginIntent, 0);
         } else {
-
+            Toast.makeText(this, "Login Successful :)", Toast.LENGTH_SHORT).show();
+            if(prefManager.isFirstTimeLaunch()) {
+                prefManager.setFirstTimeLaunch(false);
+            }
+            launchHomeScreen();
+            finish();
+            firebaseAuth.removeAuthStateListener(this);
         }
     }
 

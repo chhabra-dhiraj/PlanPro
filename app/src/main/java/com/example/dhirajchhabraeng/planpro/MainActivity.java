@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         nv = (NavigationView) findViewById(R.id.nv);
 
 //        setting of logged in user image in navigation drawer header circle imageview
-        View hView =  nv.getHeaderView(0);
+        View hView = nv.getHeaderView(0);
         CircleImageView nav_user_image = hView.findViewById(R.id.nav_user_image);
         Picasso.get()
                 .load(firebaseAuth.getCurrentUser().getPhotoUrl())
