@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dhirajchhabraeng.planpro.Activities.LoginActivity;
 import com.example.dhirajchhabraeng.planpro.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
@@ -78,12 +79,8 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.logout: {
                         firebaseAuth.signOut();
 
-                        Intent i = getBaseContext().getPackageManager()
-                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.putExtra("logout", 0);
+                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(i);
-
                         finish();
                         return true;
                     }
