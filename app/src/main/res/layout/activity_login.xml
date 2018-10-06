@@ -12,6 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:background="@drawable/capsule_shape_login"
+        android:textColor="@android:color/white"
         android:text="LOGIN" />
 
 </RelativeLayout>

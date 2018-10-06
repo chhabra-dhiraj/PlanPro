@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
+public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
 
@@ -55,10 +55,12 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         final CircleImageView nav_drawer_icon = findViewById(R.id.nav_drawer_icon);
 
-        Picasso.get()
-                .load(firebaseAuth.getCurrentUser().getPhotoUrl())
-                .placeholder(R.mipmap.ic_launcher_round)
-                .into(nav_drawer_icon);
+        if (firebaseAuth.getCurrentUser() != null) {
+            Picasso.get()
+                    .load(firebaseAuth.getCurrentUser().getPhotoUrl())
+                    .placeholder(R.mipmap.ic_launcher_round)
+                    .into(nav_drawer_icon);
+        }
 
         dl = (DrawerLayout) findViewById(R.id.activity_main);
 
@@ -106,9 +108,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         return true;
 
                     case R.id.logout: {
-                        finish();
-                        firebaseAuth.addAuthStateListener(MainActivity.this);
                         firebaseAuth.signOut();
+                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(i);
+                        finish();
                         return true;
                     }
 
@@ -116,19 +119,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         return true;
                 }
 
-
             }
         });
 
     }
 
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        if(firebaseAuth.getCurrentUser() == null){
-            Intent i = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(i);
-
-            firebaseAuth.removeAuthStateListener(MainActivity.this);
-        }
-    }
 }

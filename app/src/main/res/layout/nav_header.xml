@@ -18,6 +18,7 @@
         android:id="@+id/nav_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
         android:fontFamily="sans-serif-condensed"
         android:textColor="@android:color/white"
         android:textSize="20sp" />

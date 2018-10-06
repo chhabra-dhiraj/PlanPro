@@ -31,6 +31,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

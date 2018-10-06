@@ -75,8 +75,9 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
                             new AuthUI.IdpConfig.GoogleBuilder().build(),
                             new AuthUI.IdpConfig.EmailBuilder().build(),
                             new AuthUI.IdpConfig.PhoneBuilder().build()))
+                    .setTheme(R.style.FirebaseLoginIntentTheme)
+                    .setLogo(R.drawable.common_google_signin_btn_icon_dark)
                     .build();
-
 
             startActivityForResult(loginIntent, 0);
         } else {
@@ -85,7 +86,6 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
                 prefManager.setFirstTimeLaunch(false);
             }
             launchHomeScreen();
-            finish();
             firebaseAuth.removeAuthStateListener(this);
         }
     }
