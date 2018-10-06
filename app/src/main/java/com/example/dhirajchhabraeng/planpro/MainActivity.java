@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
     private FirebaseAuth firebaseAuth;
 
@@ -106,12 +106,9 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.logout: {
-                        firebaseAuth.signOut();
-
-                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(i);
                         finish();
-
+                        firebaseAuth.addAuthStateListener(MainActivity.this);
+                        firebaseAuth.signOut();
                         return true;
                     }
 
@@ -123,5 +120,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        if(firebaseAuth.getCurrentUser() == null){
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+
+            firebaseAuth.removeAuthStateListener(MainActivity.this);
+        }
     }
 }
