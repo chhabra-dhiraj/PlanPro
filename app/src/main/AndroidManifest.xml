@@ -12,22 +12,32 @@
 
         <activity
             android:name=".Activities.SplashScreen"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
             android:name=".Activities.WelcomeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashScreenTheme" />
 
-        <activity android:name=".Activities.LoginActivity" />
+        <activity
+            android:name=".Activities.LoginActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/MainScreenTheme" />
+
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

@@ -24,8 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dhirajchhabraeng.planpro.Activities.LoginActivity;
+import com.example.dhirajchhabraeng.planpro.Activities.ProfileActivity;
+import com.example.dhirajchhabraeng.planpro.Pojos.Profile;
 import com.example.dhirajchhabraeng.planpro.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.lang.annotation.Target;
@@ -40,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     //    navigation drawer identifiers below
     private DrawerLayout dl;
     private NavigationView nv;
+
+    private Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         if (firebaseAuth.getCurrentUser() != null) {
             Picasso.get()
                     .load(firebaseAuth.getCurrentUser().getPhotoUrl())
-                    .placeholder(R.mipmap.ic_launcher_round)
+                    .placeholder(R.drawable.ic_person_white_24dp)
                     .into(nav_drawer_icon);
         }
 
@@ -76,10 +83,13 @@ public class MainActivity extends AppCompatActivity {
 //        setting of logged in user image in navigation drawer header circle imageview
         View hView = nv.getHeaderView(0);
         CircleImageView nav_user_image = hView.findViewById(R.id.nav_user_image);
-        Picasso.get()
-                .load(firebaseAuth.getCurrentUser().getPhotoUrl())
-                .placeholder(R.mipmap.ic_launcher_round)
-                .into(nav_user_image);
+
+        if (firebaseAuth.getCurrentUser() != null) {
+            Picasso.get()
+                    .load(firebaseAuth.getCurrentUser().getPhotoUrl())
+                    .placeholder(R.drawable.ic_person_white_24dp)
+                    .into(nav_user_image);
+        }
 
 //        setting of logged in user name in navigation drawer header textview
         TextView nav_user_name = hView.findViewById(R.id.nav_user_name);
@@ -122,6 +132,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        nav_user_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        FirebaseUser currUser = firebaseAuth.getCurrentUser();
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+
+        DatabaseReference rootReference = firebaseDatabase.getReference();
+        DatabaseReference ProfileReference = rootReference.child("Profiles");
+        DatabaseReference currUserReference = ProfileReference.child(currUser.getUid()).child("Profile Details");
+
+        if (currUser != null) {
+            if (currUser.getPhotoUrl() != null) {
+                profile = new Profile(currUser.getDisplayName(), currUser.getEmail(), currUser.getPhoneNumber(), currUser.getPhotoUrl().toString());
+            } else {
+                profile = new Profile(currUser.getDisplayName(), currUser.getEmail(), currUser.getPhoneNumber(), "");
+            }
+        }
+
+        currUserReference.setValue(profile);
     }
 
 }
