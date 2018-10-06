@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dhirajchhabraeng.planpro.Activities.LoginActivity;
+import com.example.dhirajchhabraeng.planpro.Activities.MyTasksActivity;
 import com.example.dhirajchhabraeng.planpro.Activities.ProfileActivity;
 import com.example.dhirajchhabraeng.planpro.Pojos.Profile;
 import com.example.dhirajchhabraeng.planpro.R;
@@ -110,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.my_tasks:
-                        Toast.makeText(MainActivity.this, "My Personal tasks Activity to open", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, MyTasksActivity.class);
+                        startActivity(intent);
                         return true;
 
                     case R.id.about_us:
