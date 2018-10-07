@@ -1,6 +1,7 @@
 package com.example.dhirajchhabraeng.planpro.Activities;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.Timer;
 
 public class LoginActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
@@ -35,11 +37,6 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
         super.onCreate(savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
-//
-//        if (firebaseAuth.getCurrentUser() != null) {
-//            launchHomeScreen();
-//            finish();
-//        }
 
         prefManager = new PrefManager(LoginActivity.this);
 
@@ -66,8 +63,8 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == firebase_login_intent){
-           if(firebaseAuth.getCurrentUser() == null) {
+        if (requestCode == firebase_login_intent) {
+            if (firebaseAuth.getCurrentUser() == null) {
                 Toast.makeText(this, "You need to log in to continue", Toast.LENGTH_SHORT).show();
             }
         }
@@ -88,16 +85,27 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
                     .setLogo(R.drawable.common_google_signin_btn_icon_dark)
                     .build();
 
-            startActivityForResult(loginIntent,firebase_login_intent);
+            startActivityForResult(loginIntent, firebase_login_intent);
         }
-//        This blocks executes after succesful login
+//        This blocks executes after successful login
         else {
             Toast.makeText(this, "Login Successful :)", Toast.LENGTH_SHORT).show();
 
-            createCurrentUserNodeInDatabase();
+//          postDelayed method is used to handle first time authentication by email
+//          as it takes min 2 seconds to fetch the details from the default providers.
+//          Moreover, 3 seconds is used to keep a buffer of 1 second
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Do something after 100ms
+                    createCurrentUserNodeInDatabase();
+                }
+            }, 3000);
+
 
             //checks if it is first time login after launch of the app and sets the boolean accordingly.
-                if(prefManager.isFirstTimeLaunch()) {
+            if (prefManager.isFirstTimeLaunch()) {
                 prefManager.setFirstTimeLaunch(false);
             }
 
@@ -115,20 +123,19 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
         DatabaseReference currUserDetailsReference = UsersReference.child(currUser.getUid()).child("User Details");
 
 //        Log.e("TAG", "createCurrentUserNodeInDatabase: about to enter");
-        if(currUser.getDisplayName()!=null){
+        if (currUser.getDisplayName() != null) {
 //            Log.e("TAG", "createCurrentUserNodeInDatabase: " + currUser.getDisplayName());
             String[] splitStrings = currUser.getDisplayName().split("\\s+");
 //            Log.e("TAG", "createCurrentUserNodeInDatabase: "+ splitStrings );
-            if(splitStrings.length==1){
+            if (splitStrings.length == 1) {
                 userFirstName = splitStrings[0];
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userFirstName);
-            }
-            else if(splitStrings.length==2){
+            } else if (splitStrings.length == 2) {
                 userFirstName = splitStrings[0];
                 userLastName = splitStrings[1];
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userFirstName);
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userLastName);
-            }else{
+            } else {
                 userFirstName = splitStrings[0];
                 userMiddleName = splitStrings[1];
                 userLastName = splitStrings[2];
@@ -137,10 +144,12 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userLastName);
             }
         }
+
         if (currUser.getPhotoUrl() != null) {
             userProfilePhoto = currUser.getPhotoUrl().toString();
         }
-        User user = new User(userFirstName, userMiddleName, userLastName, currUser.getEmail(), currUser.getPhoneNumber(),"", "", userProfilePhoto);
+
+        User user = new User(userFirstName, userMiddleName, userLastName, currUser.getEmail(), currUser.getPhoneNumber(), "", "", userProfilePhoto);
         currUserDetailsReference.setValue(user);
     }
 
@@ -154,10 +163,10 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
 
     @Override
     public void onBackPressed() {
-        if(backCount == 0){
+        if (backCount == 0) {
             Toast.makeText(this, "Press Again to Exit", Toast.LENGTH_SHORT).show();
             backCount++;
-        }else{
+        } else {
             super.onBackPressed();
         }
     }

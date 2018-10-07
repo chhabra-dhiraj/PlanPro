@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     //    navigation drawer identifiers below
     private DrawerLayout dl;
     private NavigationView nv;
-
+    private ActionBarDrawerToggle t;
     private User user;
 
     @Override
@@ -46,10 +47,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final CircleImageView nav_drawer_icon = findViewById(R.id.nav_drawer_icon);
 
-        if (firebaseAuth.getCurrentUser().getPhotoUrl() != null) {
+        if (firebaseAuth.getCurrentUser() != null) {
             Picasso.get()
                     .load(firebaseAuth.getCurrentUser().getPhotoUrl())
                     .placeholder(R.drawable.ic_person_white_24dp)
@@ -58,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
 
         dl = (DrawerLayout) findViewById(R.id.activity_main);
 
-        nav_drawer_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dl.openDrawer(GravityCompat.START);
-            }
-        });
+//        t is used for displaying hamburger icon for navigation drawer with animation
+//        the class of t (ActionBarDrawerToggle) does draw icon & animation in real time
+        t = new ActionBarDrawerToggle(this, dl, R.string.Open, R.string.Close);
+
+        dl.addDrawerListener(t);
+        t.syncState();
 
         nv = (NavigationView) findViewById(R.id.nv);
 
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         View hView = nv.getHeaderView(0);
         CircleImageView nav_user_image = hView.findViewById(R.id.nav_user_image);
 
-        if (firebaseAuth.getCurrentUser().getPhotoUrl() != null) {
+        if (firebaseAuth.getCurrentUser() != null) {
             Picasso.get()
                     .load(firebaseAuth.getCurrentUser().getPhotoUrl())
                     .placeholder(R.drawable.ic_person_white_24dp)
@@ -79,8 +81,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
 //        setting of logged in user name in navigation drawer header textview
-        TextView nav_user_name = hView.findViewById(R.id.nav_user_name);
-        nav_user_name.setText(firebaseAuth.getCurrentUser().getDisplayName());
+        final TextView nav_user_name = hView.findViewById(R.id.nav_user_name);
+
+//        postDelayed method is used to handle first time authentication by email
+//        as it takes min 2 seconds to fetch the details from the default providers.
+//        Moreover, 3 seconds is used to keep a buffer of 1 second
+        nav_user_name.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                nav_user_name.setText(user.getDisplayName());
+            }
+        }, 3000);
 
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -127,6 +139,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (t.onOptionsItemSelected(item))
+            return true;
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

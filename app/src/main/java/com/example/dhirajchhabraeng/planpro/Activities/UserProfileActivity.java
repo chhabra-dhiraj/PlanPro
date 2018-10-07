@@ -36,22 +36,24 @@ public class UserProfileActivity extends AppCompatActivity {
                         .getCredential("user@example.com", "password1234");
 
                 // Prompt the user to re-provide their sign-in credentials
-                user.reauthenticate(credential)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                user.delete()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d("TAG", "User account deleted.");
+                if (user != null) {
+                    user.reauthenticate(credential)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    user.delete()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.e("TAG", "User account deleted.");
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
 
-                            }
-                        });
+                                }
+                            });
+                }
             }
         });
     }
