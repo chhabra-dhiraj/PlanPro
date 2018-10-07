@@ -1,20 +1,14 @@
 package com.example.dhirajchhabraeng.planpro.Pojos;
 
-public class Profile {
+public class User {
 
-    private String firstName;
-    private String lastName;
-    private String emailId;
-    private String phoneNumber;
-    private String password;
-    private String location;
-    private String profilePicture;
+    private String firstName, lastName, emailId, phoneNumber, password, location, profilePicture;
 
-    public Profile(){
+    public User(){
 
     }
 
-    public Profile(String firstName, String lastName, String emailId, String phoneNumber, String password, String location, String profilePicture) {
+    public User(String firstName, String lastName, String emailId, String phoneNumber, String password, String location, String profilePicture) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailId = emailId;
@@ -24,7 +18,7 @@ public class Profile {
         this.profilePicture = profilePicture;
     }
 
-    public Profile(String firstName, String emailId, String phoneNumber, String profilePicture) {
+    public User(String firstName, String emailId, String phoneNumber, String profilePicture) {
         this.firstName = firstName;
         this.emailId = emailId;
         this.phoneNumber = phoneNumber;

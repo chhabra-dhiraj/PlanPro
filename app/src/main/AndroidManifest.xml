@@ -31,7 +31,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/MainScreenTheme" />
         <activity
-            android:name=".Activities.ProfileActivity"
+            android:name=".Activities.UserProfileActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.MyTasksActivity"

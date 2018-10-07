@@ -1,41 +1,27 @@
 package com.example.dhirajchhabraeng.planpro;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.ViewDragHelper;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dhirajchhabraeng.planpro.Activities.LoginActivity;
 import com.example.dhirajchhabraeng.planpro.Activities.MyTasksActivity;
-import com.example.dhirajchhabraeng.planpro.Activities.ProfileActivity;
-import com.example.dhirajchhabraeng.planpro.Pojos.Profile;
-import com.example.dhirajchhabraeng.planpro.R;
+import com.example.dhirajchhabraeng.planpro.Activities.UserProfileActivity;
+import com.example.dhirajchhabraeng.planpro.Pojos.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
-
-import java.lang.annotation.Target;
-import java.lang.reflect.Field;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -47,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout dl;
     private NavigationView nv;
 
-    private Profile profile;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         nav_user_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
                 startActivity(intent);
             }
         });
@@ -148,17 +134,17 @@ public class MainActivity extends AppCompatActivity {
 
         DatabaseReference rootReference = firebaseDatabase.getReference();
         DatabaseReference ProfileReference = rootReference.child("Profiles");
-        DatabaseReference currUserReference = ProfileReference.child(currUser.getUid()).child("Profile Details");
+        DatabaseReference currUserReference = ProfileReference.child(currUser.getUid()).child("User Details");
 
         if (currUser != null) {
             if (currUser.getPhotoUrl() != null) {
-                profile = new Profile(currUser.getDisplayName(), currUser.getEmail(), currUser.getPhoneNumber(), currUser.getPhotoUrl().toString());
+                user = new User(currUser.getDisplayName(), currUser.getEmail(), currUser.getPhoneNumber(), currUser.getPhotoUrl().toString());
             } else {
-                profile = new Profile(currUser.getDisplayName(), currUser.getEmail(), currUser.getPhoneNumber(), "");
+                user = new User(currUser.getDisplayName(), currUser.getEmail(), currUser.getPhoneNumber(), "");
             }
         }
 
-        currUserReference.setValue(profile);
+        currUserReference.setValue(user);
     }
 
 }
