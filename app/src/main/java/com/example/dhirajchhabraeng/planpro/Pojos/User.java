@@ -2,14 +2,15 @@ package com.example.dhirajchhabraeng.planpro.Pojos;
 
 public class User {
 
-    private String firstName, lastName, emailId, phoneNumber, password, location, profilePicture;
+    private String firstName, middleName, lastName, emailId, phoneNumber, password, location, profilePicture;
 
     public User(){
 
     }
 
-    public User(String firstName, String lastName, String emailId, String phoneNumber, String password, String location, String profilePicture) {
+    public User(String firstName, String middleName, String lastName, String emailId, String phoneNumber, String password, String location, String profilePicture) {
         this.firstName = firstName;
+        this.middleName = middleName;
         this.lastName = lastName;
         this.emailId = emailId;
         this.phoneNumber = phoneNumber;
@@ -80,4 +81,14 @@ public class User {
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
+
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
 }

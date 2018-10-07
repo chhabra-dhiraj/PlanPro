@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         final CircleImageView nav_drawer_icon = findViewById(R.id.nav_drawer_icon);
 
-        if (firebaseAuth.getCurrentUser() != null) {
+        if (firebaseAuth.getCurrentUser().getPhotoUrl() != null) {
             Picasso.get()
                     .load(firebaseAuth.getCurrentUser().getPhotoUrl())
                     .placeholder(R.drawable.ic_person_white_24dp)
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         View hView = nv.getHeaderView(0);
         CircleImageView nav_user_image = hView.findViewById(R.id.nav_user_image);
 
-        if (firebaseAuth.getCurrentUser() != null) {
+        if (firebaseAuth.getCurrentUser().getPhotoUrl() != null) {
             Picasso.get()
                     .load(firebaseAuth.getCurrentUser().getPhotoUrl())
                     .placeholder(R.drawable.ic_person_white_24dp)
@@ -127,24 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        FirebaseUser currUser = firebaseAuth.getCurrentUser();
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-
-        DatabaseReference rootReference = firebaseDatabase.getReference();
-        DatabaseReference ProfileReference = rootReference.child("Profiles");
-        DatabaseReference currUserReference = ProfileReference.child(currUser.getUid()).child("User Details");
-
-        if (currUser != null) {
-            if (currUser.getPhotoUrl() != null) {
-                user = new User(currUser.getDisplayName(), currUser.getEmail(), currUser.getPhoneNumber(), currUser.getPhotoUrl().toString());
-            } else {
-                user = new User(currUser.getDisplayName(), currUser.getEmail(), currUser.getPhoneNumber(), "");
-            }
-        }
-
-        currUserReference.setValue(user);
     }
 
 }

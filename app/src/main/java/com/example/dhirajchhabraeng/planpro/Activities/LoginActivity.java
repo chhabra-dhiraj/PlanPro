@@ -4,15 +4,20 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.dhirajchhabraeng.planpro.MainActivity;
+import com.example.dhirajchhabraeng.planpro.Pojos.User;
 import com.example.dhirajchhabraeng.planpro.R;
 import com.example.dhirajchhabraeng.planpro.StorageManagement.PrefManager;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
@@ -22,19 +27,21 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     private FirebaseAuth firebaseAuth;
     private Button btnLogin;
     private int backCount;
+    private int firebase_login_intent = 0;
+    private String userFirstName, userMiddleName, userLastName, userProfilePhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
+//
+//        if (firebaseAuth.getCurrentUser() != null) {
+//            launchHomeScreen();
+//            finish();
+//        }
+
         prefManager = new PrefManager(LoginActivity.this);
-
-
-        if (firebaseAuth.getCurrentUser() != null) {
-            launchHomeScreen();
-            finish();
-        }
 
         setContentView(R.layout.activity_login);
 
@@ -59,14 +66,16 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == 0 && firebaseAuth.getCurrentUser() == null) {
-            Toast.makeText(this, "You need to log in to continue", Toast.LENGTH_SHORT).show();
+        if (requestCode == firebase_login_intent){
+           if(firebaseAuth.getCurrentUser() == null) {
+                Toast.makeText(this, "You need to log in to continue", Toast.LENGTH_SHORT).show();
+            }
         }
-
     }
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        //This if block is called everytime user clicks on "Login" button
         if (firebaseAuth.getCurrentUser() == null) {
             Intent loginIntent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
@@ -79,20 +88,67 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
                     .setLogo(R.drawable.common_google_signin_btn_icon_dark)
                     .build();
 
-            startActivityForResult(loginIntent, 0);
-        } else {
+            startActivityForResult(loginIntent,firebase_login_intent);
+        }
+//        This blocks executes after succesful login
+        else {
             Toast.makeText(this, "Login Successful :)", Toast.LENGTH_SHORT).show();
-            if(prefManager.isFirstTimeLaunch()) {
+
+            createCurrentUserNodeInDatabase();
+
+            //checks if it is first time login after launch of the app and sets the boolean accordingly.
+                if(prefManager.isFirstTimeLaunch()) {
                 prefManager.setFirstTimeLaunch(false);
             }
+
             launchHomeScreen();
-            firebaseAuth.removeAuthStateListener(this);
         }
+    }
+
+    private void createCurrentUserNodeInDatabase() {
+        FirebaseUser currUser = firebaseAuth.getCurrentUser();
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+
+        DatabaseReference rootReference = firebaseDatabase.getReference();
+        DatabaseReference UsersReference = rootReference.child("Users");
+        DatabaseReference currUserDetailsReference = UsersReference.child(currUser.getUid()).child("User Details");
+
+//        Log.e("TAG", "createCurrentUserNodeInDatabase: about to enter");
+        if(currUser.getDisplayName()!=null){
+//            Log.e("TAG", "createCurrentUserNodeInDatabase: " + currUser.getDisplayName());
+            String[] splitStrings = currUser.getDisplayName().split("\\s+");
+//            Log.e("TAG", "createCurrentUserNodeInDatabase: "+ splitStrings );
+            if(splitStrings.length==1){
+                userFirstName = splitStrings[0];
+//                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userFirstName);
+            }
+            else if(splitStrings.length==2){
+                userFirstName = splitStrings[0];
+                userLastName = splitStrings[1];
+//                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userFirstName);
+//                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userLastName);
+            }else{
+                userFirstName = splitStrings[0];
+                userMiddleName = splitStrings[1];
+                userLastName = splitStrings[2];
+//                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userFirstName);
+//                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userMiddleName);
+//                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userLastName);
+            }
+        }
+        if (currUser.getPhotoUrl() != null) {
+            userProfilePhoto = currUser.getPhotoUrl().toString();
+        }
+        User user = new User(userFirstName, userMiddleName, userLastName, currUser.getEmail(), currUser.getPhoneNumber(),"", "", userProfilePhoto);
+        currUserDetailsReference.setValue(user);
     }
 
     private void launchHomeScreen() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivityForResult(intent, 0);
+//        startActivityForResult(intent, 0);
+        startActivity(intent);
+        firebaseAuth.removeAuthStateListener(this);
         finish();
     }
 
@@ -105,5 +161,4 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
             super.onBackPressed();
         }
     }
-
 }
