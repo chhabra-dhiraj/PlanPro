@@ -5,7 +5,6 @@ public class User {
     private String firstName, middleName, lastName, emailId, phoneNumber, password, location, profilePicture;
 
     public User(){
-
     }
 
     public User(String firstName, String middleName, String lastName, String emailId, String phoneNumber, String password, String location, String profilePicture) {
@@ -16,13 +15,6 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.location = location;
-        this.profilePicture = profilePicture;
-    }
-
-    public User(String firstName, String emailId, String phoneNumber, String profilePicture) {
-        this.firstName = firstName;
-        this.emailId = emailId;
-        this.phoneNumber = phoneNumber;
         this.profilePicture = profilePicture;
     }
 
