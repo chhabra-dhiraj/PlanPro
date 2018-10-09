@@ -13,4 +13,5 @@
     <string name="mobile_no">Mobile Number</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="profile">Profile</string>
 </resources>

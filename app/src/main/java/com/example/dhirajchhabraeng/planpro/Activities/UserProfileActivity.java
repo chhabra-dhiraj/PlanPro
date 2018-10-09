@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.dhirajchhabraeng.planpro.R;
@@ -26,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class UserProfileActivity extends AppCompatActivity {
 
     Button btnDeleteAccount;
+    EditText etEmail, etMobileNum, etFirstName, etMiddleName, etLastName, etCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
