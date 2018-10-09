@@ -4,4 +4,13 @@
     <string name="get_started">Get Started</string>
     <string name="Open">dhiraj</string>
     <string name="Close">daman</string>
+    <string name="delete_account">Delete Your Account</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="change_password">Change Password</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="city">City</string>
+    <string name="mobile_no">Mobile Number</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>
