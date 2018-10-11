@@ -26,7 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
     private FirebaseAuth firebaseAuth;
 
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout dl;
     private NavigationView nv;
     private ActionBarDrawerToggle t;
-    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,20 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar_main);
+        Toolbar toolbar = findViewById(R.id.tool_bar_main);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final CircleImageView nav_drawer_icon = findViewById(R.id.nav_drawer_icon);
-
-        if (firebaseAuth.getCurrentUser() != null) {
-            Picasso.get()
-                    .load(firebaseAuth.getCurrentUser().getPhotoUrl())
-                    .placeholder(R.drawable.ic_person_white_24dp)
-                    .into(nav_drawer_icon);
-        }
+        nv = (NavigationView) findViewById(R.id.nv);
+        View hView = nv.getHeaderView(0);
 
         dl = (DrawerLayout) findViewById(R.id.activity_main);
 
@@ -66,33 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
         dl.addDrawerListener(t);
         t.syncState();
-
-        nv = (NavigationView) findViewById(R.id.nv);
-
-//        setting of logged in user image in navigation drawer header circle imageview
-        View hView = nv.getHeaderView(0);
-        CircleImageView nav_user_image = hView.findViewById(R.id.nav_user_image);
-
-        if (firebaseAuth.getCurrentUser() != null) {
-            Picasso.get()
-                    .load(firebaseAuth.getCurrentUser().getPhotoUrl())
-                    .placeholder(R.drawable.ic_person_white_24dp)
-                    .into(nav_user_image);
-        }
-
-//        setting of logged in user name in navigation drawer header textview
-        final TextView nav_user_name = hView.findViewById(R.id.nav_user_name);
-
-//        postDelayed method is used to handle first time authentication by email
-//        as it takes min 2 seconds to fetch the details from the default providers.
-//        Moreover, 3 seconds is used to keep a buffer of 1 second
-        nav_user_name.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                nav_user_name.setText(user.getDisplayName());
-            }
-        }, 3000);
 
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -118,10 +84,9 @@ public class MainActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.logout: {
-                        firebaseAuth.signOut();
-                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(i);
                         finish();
+                        firebaseAuth.addAuthStateListener(MainActivity.this);
+                        firebaseAuth.signOut();
                         return true;
                     }
 
@@ -132,13 +97,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        nav_user_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
-                startActivity(intent);
-            }
-        });
+        if (firebaseAuth.getCurrentUser() != null) {
+            CircleImageView nav_drawer_icon = findViewById(R.id.nav_drawer_icon);
+
+            Picasso.get()
+                    .load(firebaseAuth.getCurrentUser().getPhotoUrl())
+                    .placeholder(R.drawable.ic_person_white_24dp)
+                    .into(nav_drawer_icon);
+
+//        setting of logged in user image in navigation drawer header circle imageview
+            CircleImageView nav_user_image = hView.findViewById(R.id.nav_user_image);
+
+            Picasso.get()
+                    .load(firebaseAuth.getCurrentUser().getPhotoUrl())
+                    .placeholder(R.drawable.ic_person_white_24dp)
+                    .into(nav_user_image);
+
+//        setting of logged in user name in navigation drawer header textview
+            final TextView nav_user_name = hView.findViewById(R.id.nav_user_name);
+
+//        postDelayed method is used to handle first time authentication by email
+//        as it takes min 2 seconds to fetch the details from the default providers.
+//        Moreover, 3 seconds is used to keep a buffer of 1 second
+            nav_user_name.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        nav_user_name.setText(user.getDisplayName());
+                    }
+                }
+            }, 3000);
+
+            nav_user_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, UserProfileActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+
     }
 
     @Override
@@ -150,4 +149,12 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        if (firebaseAuth.getCurrentUser() == null) {
+            firebaseAuth.removeAuthStateListener(MainActivity.this);
+            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(i);
+        }
+    }
 }

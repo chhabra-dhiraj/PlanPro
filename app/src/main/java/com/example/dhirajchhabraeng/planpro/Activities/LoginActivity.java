@@ -35,12 +35,13 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        backCount = 0;
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         prefManager = new PrefManager(LoginActivity.this);
-
-        setContentView(R.layout.activity_login);
 
         btnLogin = findViewById(R.id.login_button);
 
@@ -56,7 +57,6 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
 
     @Override
     protected void onResume() {
-        backCount = 0;
         super.onResume();
     }
 
@@ -109,6 +109,8 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
                 prefManager.setFirstTimeLaunch(false);
             }
 
+            finish();
+
             launchHomeScreen();
         }
     }
@@ -120,45 +122,46 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
 
         DatabaseReference rootReference = firebaseDatabase.getReference();
         DatabaseReference UsersReference = rootReference.child("Users");
-        DatabaseReference currUserDetailsReference = UsersReference.child(currUser.getUid()).child("User Details");
+
+        if (currUser != null) {
+            DatabaseReference currUserDetailsReference = UsersReference.child(currUser.getUid()).child("User Details");
 
 //        Log.e("TAG", "createCurrentUserNodeInDatabase: about to enter");
-        if (currUser.getDisplayName() != null) {
+            if (currUser.getDisplayName() != null) {
 //            Log.e("TAG", "createCurrentUserNodeInDatabase: " + currUser.getDisplayName());
-            String[] splitStrings = currUser.getDisplayName().split("\\s+");
+                String[] splitStrings = currUser.getDisplayName().split("\\s+");
 //            Log.e("TAG", "createCurrentUserNodeInDatabase: "+ splitStrings );
-            if (splitStrings.length == 1) {
-                userFirstName = splitStrings[0];
+                if (splitStrings.length == 1) {
+                    userFirstName = splitStrings[0];
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userFirstName);
-            } else if (splitStrings.length == 2) {
-                userFirstName = splitStrings[0];
-                userLastName = splitStrings[1];
+                } else if (splitStrings.length == 2) {
+                    userFirstName = splitStrings[0];
+                    userLastName = splitStrings[1];
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userFirstName);
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userLastName);
-            } else {
-                userFirstName = splitStrings[0];
-                userMiddleName = splitStrings[1];
-                userLastName = splitStrings[2];
+                } else {
+                    userFirstName = splitStrings[0];
+                    userMiddleName = splitStrings[1];
+                    userLastName = splitStrings[2];
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userFirstName);
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userMiddleName);
 //                Log.e("TAG", "createCurrentUserNodeInDatabase: " + userLastName);
+                }
             }
-        }
 
-        if (currUser.getPhotoUrl() != null) {
-            userProfilePhoto = currUser.getPhotoUrl().toString();
-        }
+            if (currUser.getPhotoUrl() != null) {
+                userProfilePhoto = currUser.getPhotoUrl().toString();
+            }
 
-        User user = new User(userFirstName, userMiddleName, userLastName, currUser.getEmail(), currUser.getPhoneNumber(), "", "", userProfilePhoto);
-        currUserDetailsReference.setValue(user);
+            User user = new User(userFirstName, userMiddleName, userLastName, currUser.getEmail(), currUser.getPhoneNumber(), "", "", userProfilePhoto);
+            currUserDetailsReference.setValue(user);
+        }
     }
 
     private void launchHomeScreen() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//        startActivityForResult(intent, 0);
         startActivity(intent);
         firebaseAuth.removeAuthStateListener(this);
-        finish();
     }
 
     @Override
@@ -167,6 +170,7 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
             Toast.makeText(this, "Press Again to Exit", Toast.LENGTH_SHORT).show();
             backCount++;
         } else {
+            finish();
             super.onBackPressed();
         }
     }
