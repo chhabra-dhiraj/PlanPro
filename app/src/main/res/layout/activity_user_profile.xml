@@ -19,8 +19,15 @@
             app:title="@string/profile"
             app:collapsedTitleGravity="start"
             app:expandedTitleGravity="top"
-            android:background="@drawable/ic_person_white_24dp"
             >
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/civ_upa_profile_picture"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                />
 
             <android.support.v7.widget.Toolbar
                 android:layout_width="match_parent"
@@ -30,13 +37,6 @@
                 >
 
             </android.support.v7.widget.Toolbar>
-
-            <!--<de.hdodenhof.circleimageview.CircleImageView-->
-                <!--android:layout_width="150dp"-->
-                <!--android:layout_height="150dp" -->
-                <!--android:background="@color/white"-->
-                <!--android:layout_gravity="center"-->
-                <!--/>-->
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
