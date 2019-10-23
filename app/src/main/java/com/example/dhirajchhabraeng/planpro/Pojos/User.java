@@ -17,7 +17,7 @@ public class User implements Parcelable {
         this.lastName = lastName;
         this.emailId = emailId;
         this.phoneNumber = phoneNumber;
-        this.pin = pin;
+//        this.pin = pin;
         this.location = location;
         this.profilePicture = profilePicture;
     }
@@ -28,7 +28,7 @@ public class User implements Parcelable {
         lastName = in.readString();
         emailId = in.readString();
         phoneNumber = in.readString();
-        pin = in.readString();
+//        pin = in.readString();
         location = in.readString();
         profilePicture = in.readString();
     }
@@ -77,13 +77,13 @@ public class User implements Parcelable {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPin() {
-        return pin;
-    }
+//    public String getPin() {
+////        return pin;
+//    }
 
-    public void setPin(String pin) {
-        this.pin = pin;
-    }
+//    public void setPin(String pin) {
+////        this.pin = pin;
+//    }
 
     public String getLocation() {
         return location;
@@ -122,7 +122,7 @@ public class User implements Parcelable {
         dest.writeString(lastName);
         dest.writeString(emailId);
         dest.writeString(phoneNumber);
-        dest.writeString(pin);
+//        dest.writeString(pin);
         dest.writeString(location);
         dest.writeString(profilePicture);
     }
