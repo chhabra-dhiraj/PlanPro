@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     private PrefManager prefManager;
     private FirebaseAuth firebaseAuth;
     private Button btnLogin;
+    private RelativeLayout rootLayout;
     private int backCount;
     private int firebase_login_intent = 0;
 
@@ -47,6 +49,8 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        rootLayout = findViewById(R.id.root_layout);
 
         backCount = 0;
 
@@ -107,6 +111,8 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
                 prefManager.setFirstTimeLaunch(false);
             }
 
+
+            rootLayout.setVisibility(View.INVISIBLE);
             showPinAlertDialog();
 
         }
