@@ -1,13 +1,20 @@
 package com.example.dhirajchhabraeng.planpro.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dhirajchhabraeng.planpro.MainActivity;
@@ -15,6 +22,9 @@ import com.example.dhirajchhabraeng.planpro.Pojos.User;
 import com.example.dhirajchhabraeng.planpro.R;
 import com.example.dhirajchhabraeng.planpro.StorageManagement.PrefManager;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +40,8 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     private Button btnLogin;
     private int backCount;
     private int firebase_login_intent = 0;
-    private String userFirstName, userMiddleName, userLastName, userProfilePhoto;
+
+    private String userFirstName, userMiddleName, userLastName, userProfilePhoto, userPin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,31 +102,58 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
         else {
             Toast.makeText(this, "Login Successful :)", Toast.LENGTH_SHORT).show();
 
-//          postDelayed method is used to handle first time authentication by email
-//          as it takes min 2 seconds to fetch the details from the default providers.
-//          Moreover, 3 seconds is used to keep a buffer of 1 second
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //Do something after 100ms
-                    createCurrentUserNodeInDatabase();
-                }
-            }, 3000);
-
-
             //checks if it is first time login after launch of the app and sets the boolean accordingly.
             if (prefManager.isFirstTimeLaunch()) {
                 prefManager.setFirstTimeLaunch(false);
             }
 
-            finish();
+            showPinAlertDialog();
 
-            launchHomeScreen();
         }
     }
 
-    private void createCurrentUserNodeInDatabase() {
+    private void showPinAlertDialog() {
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_pin_layout, null);
+
+        final EditText pin1 = view.findViewById(R.id.pin_1);
+
+        final AlertDialog alertDialog =
+                new AlertDialog.Builder(this)
+                        .setTitle("Please Enter your four digit pin")
+                        .setCancelable(false)
+                        .setMessage("This pin is for your own safety")
+                        .setView(view)
+                        .create();
+
+        alertDialog.show();
+
+        pin1.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) && pin1.getText().toString().length() == 4) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    final String userPin = pin1.getText().toString();
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            /*postDelayed method is used to handle first time authentication by email
+                              as it takes min 2 seconds to fetch the details from the default providers.
+                              Moreover, 3 seconds is used to keep a buffer of 1 second
+                            */
+                            createCurrentUserNodeInDatabase(userPin);
+                        }
+                    }, 2000);
+
+                    launchHomeScreen();
+
+                    alertDialog.cancel();
+                }
+                return false;
+            }
+        });
+    }
+
+    private void createCurrentUserNodeInDatabase(String userPin) {
         FirebaseUser currUser = firebaseAuth.getCurrentUser();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -153,7 +191,8 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
                 userProfilePhoto = currUser.getPhotoUrl().toString();
             }
 
-            User user = new User(userFirstName, userMiddleName, userLastName, currUser.getEmail(), currUser.getPhoneNumber(), "", "", userProfilePhoto);
+
+            User user = new User(userFirstName, userMiddleName, userLastName, currUser.getEmail(), currUser.getPhoneNumber(), userPin, "", userProfilePhoto);
             currUserDetailsReference.setValue(user);
         }
     }
@@ -161,6 +200,7 @@ public class LoginActivity extends AppCompatActivity implements FirebaseAuth.Aut
     private void launchHomeScreen() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
+        finish();
         firebaseAuth.removeAuthStateListener(this);
     }
 
