@@ -18,18 +18,6 @@ public class TaskDescriptionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Enables the "up" button in a custom toolbar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
